@@ -1,0 +1,49 @@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <app-accordion [headerText]="'Passenger Details'" [accordionColor]="'bg-secondary'">
+          <form [formGroup]="passengerForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-outline">
+                  <label class="form-label" for="passenger_name">Passenger Name</label>
+                  <input type="text" id="passenger_name" formControlName="passenger_name" class="form-control" />
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-outline">
+                  <label class="form-label" for="passenger_age">Age</label>
+                  <input type="number" id="passenger_age" formControlName="passenger_age" class="form-control" />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-outline">
+                  <label class="form-label" for="passenger_phone_number">Phone Number</label>
+                  <input type="tel" id="passenger_phone_number" formControlName="passenger_phone_number" class="form-control" />
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-outline">
+                  <label class="form-label" for="passenger_dob">Date of Birth</label>
+                  <input type="date" id="passenger_dob" formControlName="passenger_dob" class="form-control" />
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-4 text-center">
+                <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+              </div>
+              <div class="col-4 text-center">
+                <button type="button" class="btn btn-warning" (click)="onReset()">Reset</button>
+              </div>
+              <div class="col-4 text-center">
+                <button type="submit" class="btn btn-success" [disabled]="!passengerForm.valid">Save</button>
+              </div>
+            </div>
+          </form>
+        </app-accordion>
+      </div>
+    </div>
+  </div>

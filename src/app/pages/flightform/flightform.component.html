@@ -1,0 +1,90 @@
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <app-accordion [headerText]="'Flight Details'" [accordionColor]="'bg-primary'">
+        <form [formGroup]="flightForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-6">
+              <div class="form-outline">
+                <label for="flightNo">Flight Number</label>
+                <input type="text" id="flightNo" formControlName="flightNo" class="form-control">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-outline">
+                <label for="capacity">Capacity</label>
+                <input type="number" id="capacity" formControlName="capacity" class="form-control">
+              </div>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-6">
+              <div class="form-outline">
+                <label for="fromStation">From Station</label>
+                <input type="text" id="fromStation" formControlName="fromStation" class="form-control">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-outline">
+                <label for="toStation">To Station</label>
+                <input type="text" id="toStation" formControlName="toStation" class="form-control">
+              </div>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-6">
+              <div class="form-outline">
+                <label for="fromCode">From Code</label>
+                <input type="text" id="fromCode" formControlName="fromCode" class="form-control">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-outline">
+                <label for="toCode">To Code</label>
+                <input type="text" id="toCode" formControlName="toCode" class="form-control">
+              </div>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-6">
+              <div class="form-outline">
+                <label for="departure">Departure</label>
+                <input type="datetime-local" id="departure" formControlName="departure" class="form-control">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-outline">
+                <label for="arrival">Arrival</label>
+                <input type="datetime-local" id="arrival" formControlName="arrival" class="form-control">
+              </div>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-6">
+              <div class="form-outline">
+                <label for="price">Price</label>
+                <input type="number" id="price" formControlName="price" class="form-control">
+              </div>
+            </div>
+          </div>
+  
+          <div class="row mt-3">
+            <div class="col-4 text-center">
+              <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+            </div>
+            <div class="col-4 text-center">
+              <button type="button" class="btn btn-warning" (click)="onReset()">Reset</button>
+            </div>
+            <div class="col-4 text-center">
+              <button type="submit" class="btn btn-primary" [disabled]="!flightForm.valid">Save</button>
+            </div>
+          </div>
+        </form>
+      </app-accordion>
+      </div>
+    </div>
+  </div>
