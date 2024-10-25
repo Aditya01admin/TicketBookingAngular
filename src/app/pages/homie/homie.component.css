@@ -1,0 +1,10 @@
+.image-container {
+    text-align: center; 
+    margin: 60px 0; 
+  }
+  
+  .image-container img {
+    width: 100%; 
+    max-width: 1000px; 
+    height: auto; 
+  }

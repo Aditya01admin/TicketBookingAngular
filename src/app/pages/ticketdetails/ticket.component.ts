@@ -1,12 +1,33 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+
 interface Ticket {
-  ticket_id: number;
+  ticketId: number;
   ticket_number: number;
-  flight_id: number;
-  passenger_id: number;
+  flight:{
+    flightNo: string;};
+  passengers:{
+    passengerId: number;
+    passengerName: string;};
 }
+
+// interface Passenger {
+//   passenger_id: number;
+//   passengerName: string;
+// }
+
+// interface Flight {
+//   flightNo: string;
+// }
+
+// interface Ticket {
+//   ticketId: number;
+//   ticket_number: number;
+//   flight: Flight;
+//   passengers: Passenger[];
+// }
 
 @Component({
   selector: 'app-ticket',
@@ -16,16 +37,21 @@ interface Ticket {
 export class TicketComponent implements OnInit {
   ticketList: Ticket[] = [];
   headArray = [
-    { Head: 'Ticket Number', FieldName: 'ticket_number' },
-    { Head: 'Flight ID', FieldName: 'flight_id' },
-    { Head: 'Passenger ID', FieldName: 'passenger_id' },
+    { Head: 'Ticket Number', FieldName: 'ticketNumber' },
+    { Head: 'Flight No', FieldName: 'flight.flightNo' },
+    { Head: 'Passenger ID', FieldName:'passengers.0.passengerId'},
+    { Head: 'Passenger Name', FieldName: 'passengers.0.passengerName' },
     { Head: 'Action', FieldName: '' }
   ];
 
-  constructor(private http: HttpClient) { }
+
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
-    this.loadTickets();
+    this.loadTickets();  
   }
 
   loadTickets() {
@@ -40,12 +66,20 @@ export class TicketComponent implements OnInit {
   }
 
   editTicket(item: Ticket) {
-    console.log('Edit ticket:', item);
-    // Implement edit logic
+    this.router.navigate(['/ticketform',item.ticketId]);
   }
 
   deleteTicket(item: Ticket) {
-    console.log('Delete ticket:', item);
-    // Implement delete logic
+    if (confirm(`Are you sure you want to delete ${item.ticketId}?`)){
+      this.http.delete(`http://localhost:8082/tickets/${item.ticketId}`).subscribe({
+        next: ()=>{
+          console.log('Ticket deleted sucessfully');
+          this.ticketList=this.ticketList.filter(p=>p.ticketId !== item.ticketId);
+        },
+        error:(error)=>{
+          console.error('Error deleting ticket',error);
+        }
+      });
+    }
   }
 }

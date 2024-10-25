@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+
 
 interface Passenger {
-  passenger_id: number;
-  passenger_name: string;
-  passenger_age: number;
-  passenger_phone_number: string;
-  passenger_dob: string;
+  passengerId: number;
+  passengerName: string;
+  passengerAge: number;
+  passengerPhoneNumber: string;
+  passengerDob: string;
 }
 
 @Component({
@@ -17,14 +19,18 @@ interface Passenger {
 export class PassengerComponent implements OnInit {
   passengerList: Passenger[] = [];
   headArray = [
-    { Head: 'Name', FieldName: 'passenger_name' },
-    { Head: 'Age', FieldName: 'passenger_age' },
-    { Head: 'Phone Number', FieldName: 'passenger_phone_number' },
-    { Head: 'Date of Birth', FieldName: 'passenger_dob' },
+    {Head: 'ID', FieldName: 'passengerId'},
+    { Head: 'Name', FieldName: 'passengerName' },
+    { Head: 'Age', FieldName: 'passengerAge' },
+    { Head: 'Phone Number', FieldName: 'passengerPhoneNumber' },
+    { Head: 'Date of Birth', FieldName: 'passengerDob' },
     { Head: 'Action', FieldName: '' }
   ];
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.loadPassengers();
@@ -42,12 +48,24 @@ export class PassengerComponent implements OnInit {
   }
 
   editPassenger(item: Passenger) {
-    console.log('Edit passenger:', item);
-    // Implement edit logic
-  }
+    this.router.navigate(['/passengerform', item.passengerId]);
 
+  }
   deletePassenger(item: Passenger) {
-    console.log('Delete passenger:', item);
-    // Implement delete logic
+    if (confirm(`Are you sure you want to delete passenger ${item.passengerId}?`)) {
+      this.http.delete(`http://localhost:8082/passengers/${item.passengerId}`).subscribe({
+        next: () => {
+          console.log('Passenger deleted successfully');
+          this.passengerList = this.passengerList.filter(p => p.passengerId !== item.passengerId);
+        },
+        error: (error) => {
+          console.error('Error deleting passenger:', error);
+        }
+      });
+    }
   }
 }
+
+
+
+

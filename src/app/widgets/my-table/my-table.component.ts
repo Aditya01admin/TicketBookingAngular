@@ -15,12 +15,14 @@ export class MyTableComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  getNestedValue(item: any, fieldName: string): any {
+    if (!fieldName) return '';
+    return fieldName.split('.').reduce((obj, key) => obj && obj[key], item);
+  }
   edit(item: any) {
-    debugger;
     this.onEdit.emit(item);
   }
   delete(item: any) {
-    debugger;
     this.onDelete.emit(item);
   }
 }

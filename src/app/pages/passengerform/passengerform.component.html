@@ -1,49 +1,77 @@
 <div class="container-fluid">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <app-accordion [headerText]="'Passenger Details'" [accordionColor]="'bg-secondary'">
-          <form [formGroup]="passengerForm" (ngSubmit)="onSubmit()">
-            <div class="row">
-              <div class="col-6">
-                <div class="form-outline">
-                  <label class="form-label" for="passenger_name">Passenger Name</label>
-                  <input type="text" id="passenger_name" formControlName="passenger_name" class="form-control" />
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="form-outline">
-                  <label class="form-label" for="passenger_age">Age</label>
-                  <input type="number" id="passenger_age" formControlName="passenger_age" class="form-control" />
-                </div>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <app-accordion [headerText]="'Passenger Details'" [accordionColor]="'bg-secondary'">
+        <form [formGroup]="passengerForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-6">
+              <div class="form-outline">
+                <label class="form-label" for="passengerId">Passenger ID</label>
+                <input type="text" id="passengerId" formControlName="passengerId" class="form-control" />
               </div>
             </div>
-            <div class="row">
-              <div class="col-6">
-                <div class="form-outline">
-                  <label class="form-label" for="passenger_phone_number">Phone Number</label>
-                  <input type="tel" id="passenger_phone_number" formControlName="passenger_phone_number" class="form-control" />
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="form-outline">
-                  <label class="form-label" for="passenger_dob">Date of Birth</label>
-                  <input type="date" id="passenger_dob" formControlName="passenger_dob" class="form-control" />
-                </div>
+            <div class="col-6">
+              <div class="form-outline">
+                <label class="form-label" for="passengerName">Passenger Name</label>
+                <input type="text" id="passengerName" formControlName="passengerName" class="form-control" />
               </div>
             </div>
-            <div class="row mt-3">
-              <div class="col-4 text-center">
-                <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
-              </div>
-              <div class="col-4 text-center">
-                <button type="button" class="btn btn-warning" (click)="onReset()">Reset</button>
-              </div>
-              <div class="col-4 text-center">
-                <button type="submit" class="btn btn-success" [disabled]="!passengerForm.valid">Save</button>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-outline">
+                <label for="passengerAge">Age</label>
+                <input type="number" id="passengerAge" formControlName="passengerAge" class="form-control" readonly>
               </div>
             </div>
-          </form>
-        </app-accordion>
+            <div class="col-6">
+              <div class="form-outline">
+                <label class="form-label" for="passengerPhoneNumber">Phone Number</label>
+                <input type="tel" id="passengerPhoneNumber" formControlName="passengerPhoneNumber" class="form-control" />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-outline">
+                <label class="form-label" for="passengerDob">DOB</label>
+                <input type="date" id="passengerDob" formControlName="passengerDob" class="form-control" />
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-4 text-center">
+              <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+            </div>
+            <div class="col-4 text-center">
+              <button type="button" class="btn btn-warning" (click)="onReset()">Reset</button>
+            </div>
+            <div class="col-4 text-center">
+              <button type="submit" class="btn btn-primary" [disabled]="!passengerForm.valid">Save</button>
+            </div>
+          </div>
+        </form>
+      </app-accordion>
+    </div>
+  </div>
+</div>
+
+                                          <!-- Success Popup -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display': showSuccessPopup ? 'block' : 'none'}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSuccessPopup()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Passenger information has been successfully saved.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="closeSuccessPopup()">OK</button>
       </div>
     </div>
   </div>
+</div>

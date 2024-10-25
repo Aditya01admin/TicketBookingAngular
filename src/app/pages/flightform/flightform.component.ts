@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-flightform',
@@ -10,15 +10,25 @@ import { Router } from '@angular/router';
 })
 export class FlightformComponent implements OnInit {
   flightForm!: FormGroup;
+  isEditMode: boolean = false;
+  flightNo: number | null = null;
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.initForm();
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.isEditMode = true;
+        this.flightNo = +params['id'];
+        this.loadFlightData(this.flightNo);
+      }
+    });
   }
 
   initForm(): void {
@@ -35,32 +45,73 @@ export class FlightformComponent implements OnInit {
     });
   }
 
+  formatDateTime(dateString: string): string | null {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return null;
+
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const hours = String(date.getUTCHours()).padStart(2, '0');
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`; // Format as YYYY-MM-DDTHH:mm
+  }
+
+  loadFlightData(id: number): void {
+    this.http.get(`http://localhost:8082/flights/${id}`).subscribe({
+      next: (data: any) => {
+        this.flightForm.patchValue({
+          flightNo: data.flightNo,
+          capacity: data.capacity,
+          fromStation: data.fromStation,
+          toStation: data.toStation,
+          fromCode: data.fromCode,
+          toCode: data.toCode,
+          departure: this.formatDateTime(data.departure), // Use the new format function
+          arrival: this.formatDateTime(data.arrival),     // Use the new format function
+          price: data.price,
+        });
+        // this.flightForm.get('flightNo')?.disable(); // Disable the flight No field in edit mode
+      },
+      error: (error) => {
+        console.error('Error fetching flight data:', error);
+      }
+    });
+  }
+
   onSubmit(): void {
     if (this.flightForm.valid) {
       const flightData = this.flightForm.value;
-      
-      flightData.departure = new Date(flightData.departure);
-      flightData.arrival = new Date(flightData.arrival);
+      flightData.departure=new Date(flightData.departure);
+      flightData.arrival=new Date(flightData.arrival);
 
-      this.http.post('http://localhost:8080/flights', flightData)
-      .subscribe({ 
-        next: (response: any) => { 
-          console.log('Flight saved successfully', response);
+
+      const apiCall = this.isEditMode
+        ? this.http.put(`http://localhost:8082/flights/${this.flightNo}`, flightData)
+        : this.http.post('http://localhost:8082/flights', flightData);
+
+      apiCall.subscribe({
+        next: (response: any) => {
+          console.log(this.isEditMode?'Flight updated sucessfully':'Flight saved successfully', response);
           this.router.navigate(['/flights']);
         },
-        error: (error) => { 
-          console.error('Error saving flight', error);            
+        error: (error) => {
+          console.error(this.isEditMode?'Error updating the flight':'Error saving flight', error);
         }
       });
     }
   }
 
   onReset(): void {
-    this.flightForm.reset();
+    if (this.isEditMode) {
+      this.loadFlightData(this.flightNo!);
+    } else {
+      this.flightForm.reset();
+    }
   }
 
   onCancel(): void {
-    // Yoo navigate back to the flight list
     this.router.navigate(['/flights']);
   }
 }

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+
 
 interface Flight {
-  ID: number;
-  FLIGHT_NO: string;
+  flightNo: string;
   CAPACITY: number;
   FROM_STATION: string;
   TO_STATION: string;
@@ -22,16 +23,22 @@ interface Flight {
 export class FlightComponent implements OnInit {
   flightList: Flight[] = [];
   headArray = [
-    { Head: 'Flight No', FieldName: 'FLIGHT_NO' },
-    { Head: 'From', FieldName: 'FROM_STATION' },
-    { Head: 'To', FieldName: 'TO_STATION' },
-    { Head: 'Departure', FieldName: 'DEPARTURE' },
-    { Head: 'Arrival', FieldName: 'ARRIVAL' },
-    { Head: 'Price', FieldName: 'PRICE' },
+    { Head: 'Flight No', FieldName: 'flightNo' },
+    { Head:'Capacity', FieldName:'capacity'},
+    { Head: 'From', FieldName: 'fromStation' },
+    { Head: 'FCode', FieldName:'fromCode'},
+    { Head: 'To', FieldName: 'toStation' },
+    { Head: 'DCode',FieldName:'toCode'},
+    { Head: 'Departure', FieldName: 'departure' },
+    { Head: 'Arrival', FieldName: 'arrival' },
+    { Head: 'Price', FieldName: 'price' },
     { Head: 'Action', FieldName: '' }
   ];
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.loadFlights();
@@ -49,12 +56,20 @@ export class FlightComponent implements OnInit {
   }
 
   editFlight(item: Flight) {
-    console.log('Edit flight:', item);
-    // Implement edit logic
+    this.router.navigate(['/flightform', item.flightNo]);
   }
 
   deleteFlight(item: Flight) {
-    console.log('Delete flight:', item);
-    // Implement delete logic
+      if (confirm(`Are you sure you want to delete flights ${item.flightNo}?`)) {
+        this.http.delete(`http://localhost:8082/flights/${item.flightNo}`).subscribe({
+          next: () => {
+            console.log('Flight deleted successfully');
+            this.flightList = this.flightList.filter(p => p.flightNo !== item.flightNo);
+          },
+          error: (error) => {
+            console.error('Error deleting flight:', error);
+          }
+        });
+      }
   }
 }
